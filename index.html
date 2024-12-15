@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Generator</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <style>
+    /* General Body and Page Styling */
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #ff7e5f, #feb47b);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      color: #fff;
+      text-shadow: 0px 2px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: #fff;
+      margin-bottom: 20px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-align: center;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: #fff;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 550px;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 15px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      backdrop-filter: blur(10px);
+      box-sizing: border-box;
+    }
+
+    /* Input Field */
+    input[type="text"] {
+      padding: 15px;
+      width: 80%;
+      margin: 15px 0;
+      font-size: 1.1rem;
+      border: 2px solid #ff7e5f;
+      border-radius: 8px;
+      outline: none;
+      transition: all 0.3s ease-in-out;
+      color: #333;
+    }
+
+    input[type="text"]:focus {
+      border-color: #feb47b;
+      box-shadow: 0 0 8px rgba(255, 126, 95, 0.5);
+    }
+
+    /* Button Styling */
+    button {
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      background: linear-gradient(135deg, #136795, #feb47b);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease, transform 0.3s ease;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #feb47b, #319ee7);
+      transform: translateY(-5px);
+    }
+
+    button:active {
+      background: #50d8ec;
+      transform: translateY(1px);
+    }
+
+    /* QR Code Display */
+    #qrcode {
+      margin-top: 20px;
+      transition: all 0.3s ease;
+      max-width: 100%;
+    }
+
+    img {
+      width: 100%;
+      max-width: 350px;
+      margin: auto;
+      display: block;
+      border-radius: 15px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease;
+    }
+
+    img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Download Link */
+    a {
+      display: inline-block;
+      margin-top: 25px;
+      font-size: 1.1rem;
+      color: #5facff;
+      text-decoration: none;
+      font-weight: 600;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+    }
+
+    a:hover {
+      text-decoration: underline;
+      color: #7be8fe;
+    }
+
+    /* Footer */
+    footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 0.9rem;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    /* Media Queries for Responsiveness */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+      }
+
+      input[type="text"] {
+        font-size: 1rem;
+        width: 90%;
+      }
+
+      img {
+        max-width: 250px;
+      }
+    }
+
+    /* Animation for fading in elements */
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Generate Your QR Code</h1>
+    <p>Enter any URL below to generate your QR code</p>
+
+    <!-- Input Field -->
+    <input type="text" id="urlInput" placeholder="Enter URL here" />
+
+    <!-- Generate Button -->
+    <button onclick="generateQRCode()">Generate QR Code</button>
+
+    <!-- QR Code Display -->
+    <div id="qrcode"></div>
+
+    <!-- Download Link -->
+    <a id="downloadLink" style="display: none;" download="qrcode.png">Download QR Code</a>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 QR Code Generator. All rights reserved.</p>
+  </footer>
+
+  <script>
+    function generateQRCode() {
+      var url = document.getElementById('urlInput').value;
+      if (!url) {
+        alert('Please enter a valid URL.');
+        return;
+      }
+
+      // Generate QR code using the URL input
+      QRCode.toDataURL(url, { width: 250, height: 250 }, function (err, url) {
+        if (err) {
+          console.error(err);
+        } else {
+          // Create the QR code image
+          var imgTag = document.createElement('img');
+          imgTag.src = url;
+          imgTag.alt = "QR Code";
+          
+          // Display the QR code
+          var qrCodeDiv = document.getElementById('qrcode');
+          qrCodeDiv.innerHTML = ''; // Clear previous QR code if any
+          qrCodeDiv.appendChild(imgTag);
+
+          // Make the download link visible
+          var downloadLink = document.getElementById('downloadLink');
+          downloadLink.href = url; // Set download link to the QR code image
+          downloadLink.style.display = 'inline-block'; // Make the download link visible
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
